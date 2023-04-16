@@ -1,13 +1,21 @@
 import React, { useState } from "react";
 import Modal from 'react-modal'
-import verbs from './verbData.json'
-
-const  personalPronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"]
-
+// import verbs from './verbData.json'
+const FrenchVerbs = require('french-verbs');
+const Lefff = require('french-verbs-lefff/dist/conjugations.json');
+const verbs = ['danser', 'finir', 'être', 'avoir', 'aller', 'connaître', 'faire', 'pouvoir', 'prendre', 'venir', 'savoir', 'vouloir']
+const personalPronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"]
+const tenses = {
+  "Present":"PRESENT",
+  "Imparfait":"IMPARFAIT",
+  "Futur Simple":"FUTUR",
+  "Conditionnel Présent":"CONDITIONNEL_PRESENT",
+  "Subjonctif Présent":"SUBJONCTIF_IMPARFAIT",
+}
 
   function ConjugationQuiz() {
     const [verbIndex, setVerbIndex] = useState(0);
-    const [tense, setTense] = useState("present");
+    const [tense, setTense] = useState(Object.entries(tenses)[0]);
     const [answers, setAnswers] = useState(new Array(6).fill(""));
     const [score, setScore] = useState(0);
     const [showHint, setShowHint] = useState(false);
@@ -24,7 +32,7 @@ const  personalPronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"
       event.preventDefault();
       let newScore = 0;
       for (let i = 0; i < 6; i++) {
-        if (answers[i] === verb.conjugations[tense][i]) {
+        if (answers[i] === FrenchVerbs.getConjugation(Lefff, verb, tense[1], i)) {
           newScore++;
         }
       }
@@ -33,7 +41,7 @@ const  personalPronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"
   
     const handleNext = () => {
       setVerbIndex((prevIndex) => (prevIndex + 1) % verbs.length);
-      setTense("present");
+      setTense(Object.entries(tenses)[0]);
       setAnswers(new Array(6).fill(""));
       setScore(0);
     };
@@ -51,15 +59,15 @@ const  personalPronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">{`${verb.infinitive} - ${tense}`}</h5>
+              <h5 className="modal-title">{`${verb} - ${tense[0]}`}</h5>
               <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleCloseHint}>
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div className="modal-body">
-              {verb.conjugations[tense].map((conjugation, index) => (
+            {personalPronouns.map((personalPronoun, index) => (
                 <div key={index}>
-                  {`${personalPronouns[index]} ${conjugation}`}
+                  {`${personalPronouns[index]} ${FrenchVerbs.getConjugation(Lefff, verb, tense[1], index)}`}
                 </div>
               ))}
             </div>
@@ -76,18 +84,16 @@ const  personalPronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"
           <label htmlFor="verb-select">Verb</label>
           <select id="verb-select" className="form-control" value={verbIndex} onChange={(event) => setVerbIndex(event.target.value)}>
             {verbs.map((verb, index) => (
-              <option key={index} value={index}>{verb.infinitive}</option>
+              <option key={index} value={index}>{verb}</option>
             ))}
           </select>
         </div>
         <div className="form-group">
           <label htmlFor="tense-select">Tense</label>
           <select id="tense-select" className="form-control" value={tense} onChange={(event) => setTense(event.target.value)}>
-            <option value="present">Present</option>
-            <option value="imparfait">Imparfait</option>
-            <option value="futurSimple">Futur Simple</option>
-            <option value="conditionnelPresent">Conditionnel Présent</option>
-            <option value="subjonctifPresent">Subjonctif Présent</option>
+          {Object.entries(tenses).map((t, index) => (
+              <option key={index} value={t[1]}>{t[0]}</option>
+            ))}
           </select>
         </div>
         <table className="table table-bordered">
@@ -116,8 +122,6 @@ const  personalPronouns = ["je", "tu", "il/elle/on", "nous", "vous", "ils/elles"
       <Modal isOpen={showHint}>
       {hintModal}
       </Modal>
-
-      
     </div>
   );
 }
