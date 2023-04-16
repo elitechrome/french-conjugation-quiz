@@ -1,0 +1,12 @@
+[ 
+    {    
+        "infinitive": "parler",
+        "conjugations": {   
+        "present": ["parle", "parles", "parle", "parlons", "parlez", "parlent"],
+        "imparfait": ["parlais", "parlais", "parlait", "parlions", "parliez", "parlaient"],
+        "futurSimple": ["parlerai", "parleras", "parlera", "parlerons", "parlerez", "parleront"],
+        "conditionnelPresent": ["parlerais", "parlerais", "parlerait", "parlerions", "parleriez", "parleraient"],
+        "subjonctifPresent": ["parle", "parles", "parle", "parlions", "parliez", "parlent"]
+        }
+    }
+]
